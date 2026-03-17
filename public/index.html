@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>批发订单系统 - 客户下单</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="loginPage" class="page">
+            <div class="header">
+                <h1>批发订单系统</h1>
+                <p>请登录您的账户</p>
+            </div>
+            <div class="login-form">
+                <input type="text" id="loginPhone" placeholder="请输入手机号" />
+                <input type="password" id="loginPassword" placeholder="请输入密码" />
+                <button onclick="customerLogin()" class="btn-primary">登录</button>
+                <p class="register-link">还没有账户？<a href="#" onclick="showRegister()">立即注册</a></p>
+            </div>
+        </div>
+
+        <div id="registerPage" class="page" style="display:none;">
+            <div class="header">
+                <h1>注册账户</h1>
+                <p>创建您的新账户</p>
+            </div>
+            <div class="login-form">
+                <input type="text" id="regName" placeholder="请输入姓名" />
+                <input type="text" id="regPhone" placeholder="请输入手机号" />
+                <input type="password" id="regPassword" placeholder="请输入密码" />
+                <input type="text" id="regAddress" placeholder="请输入收货地址" />
+                <button onclick="customerRegister()" class="btn-primary">注册</button>
+                <p class="register-link">已有账户？<a href="#" onclick="showLogin()">立即登录</a></p>
+            </div>
+        </div>
+
+        <div id="productPage" class="page" style="display:none;">
+            <div class="header">
+                <div class="header-top">
+                    <h1>商品列表</h1>
+                    <div class="header-actions">
+                        <button onclick="showCart()" class="btn-cart">购物车 <span id="cartCount" class="badge">0</span></button>
+                        <button onclick="customerLogout()" class="btn-logout">退出</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="搜索商品..." oninput="searchProducts()" />
+                </div>
+                <div class="category-bar" id="categoryBar"></div>
+            </div>
+            <div class="product-list" id="productList"></div>
+        </div>
+
+        <div id="cartPage" class="page" style="display:none;">
+            <div class="header">
+                <div class="header-top">
+                    <h1>购物车</h1>
+                    <button onclick="hideCart()" class="btn-back">返回</button>
+                </div>
+            </div>
+            <div class="cart-list" id="cartList"></div>
+            <div class="cart-footer" id="cartFooter" style="display:none;">
+                <div class="cart-total"><span>总计：</span><span id="cartTotal">¥0.00</span></div>
+                <div class="cart-actions">
+                    <button onclick="clearCart()" class="btn-secondary">清空</button>
+                    <button onclick="showCheckout()" class="btn-primary">去结算</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="checkoutPage" class="page" style="display:none;">
+            <div class="header">
+                <div class="header-top">
+                    <h1>确认订单</h1>
+                    <button onclick="hideCheckout()" class="btn-back">返回</button>
+                </div>
+            </div>
+            <div class="checkout-form">
+                <div class="form-group">
+                    <label>收货地址</label>
+                    <input type="text" id="checkoutAddress" />
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="checkoutNote" placeholder="如有特殊要求请备注"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>支付方式</label>
+                    <select id="checkoutPayment">
+                        <option value="online">在线支付</option>
+                        <option value="offline">货到付款</option>
+                    </select>
+                </div>
+                <div class="order-summary">
+                    <h3>订单摘要</h3>
+                    <div id="orderSummary"></div>
+                    <div class="total-amount"><span>应付总额：</span><span id="orderTotal">¥0.00</span></div>
+                </div>
+                <button onclick="submitOrder()" class="btn-primary btn-full">提交订单</button>
+            </div>
+        </div>
+
+        <div id="orderListPage" class="page" style="display:none;">
+            <div class="header">
+                <div class="header-top">
+                    <h1>我的订单</h1>
+                    <button onclick="showProducts()" class="btn-back">返回</button>
+                </div>
+            </div>
+            <div class="order-list" id="orderList"></div>
+        </div>
+
+        <div id="orderDetailModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>订单详情</h2>
+                    <button onclick="closeOrderDetail()" class="close">&times;</button>
+                </div>
+                <div class="modal-body" id="orderDetailContent"></div>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>
