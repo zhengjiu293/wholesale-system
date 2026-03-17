@@ -71,7 +71,46 @@ app.get('/api/customer/:id/orders', async (req, res) => {
     }
 });
 
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', async (req, res) => { // 客户注册
+app.post('/api/customers/register', async (req, res) => {
+    try {
+        const { name, phone, password, address } = req.body;
+        
+        // 检查是否已存在
+        const existing = await db.get("SELECT * FROM customers WHERE phone = ?", [phone]);
+        if (existing) {
+            return res.json({ success: false, error: '该手机号已注册' });
+        }
+        
+        // 创建新客户
+        const result = await db.run(
+            "INSERT INTO customers (name, phone, password, address) VALUES (?, ?, ?, ?)",
+            [name, phone, password || '', address || '']
+        );
+        
+        const customer = await db.get("SELECT * FROM customers WHERE id = ?", [result.lastID]);
+        res.json({ success: true, customer: customer });
+    } catch (err) {
+        res.json({ success: false, error: err.message });
+    }
+});
+
+// 客户登录
+app.post('/api/customers/login', async (req, res) => {
+    try {
+        const { phone, password } = req.body;
+        let customer = await db.get("SELECT * FROM customers WHERE phone = ?", [phone]);
+
+        if (!customer) {
+            return res.json({ success: false, error: '用户不存在' });
+        }
+
+        res.json({ success: true, customer: customer });
+    } catch (err) {
+        res.json({ success: false, error: err.message });
+    }
+});
+
     try {
         const { customer_id, items, payment_method, remark, total_amount } = req.body;
         const order_no = 'ORD' + Date.now() + Math.random().toString(36).substr(2, 4).toUpperCase();
