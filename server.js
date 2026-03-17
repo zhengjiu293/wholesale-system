@@ -40,7 +40,7 @@ app.get('/api/products', async (req, res) => {
         sql += " ORDER BY p.id DESC";
         const products = await db.query(sql, params);
         res.json({ success: true, data: products });
-    } catch (err) {
+    } catch (err) {吧
         res.json({ success: false, message: err.message });
     }
 });
@@ -193,6 +193,41 @@ app.get('/api/admin/customers', async (req, res) => {
         res.json({ success: true, data: customers });
     } catch (err) {
         res.json({ success: false, message: err.message });
+    }
+});
+// 获取客户订单列表（兼容前端路径）
+app.get('/api/orders/customer/:customerId', async (req, res) => {
+    try {
+        const orders = await db.query(
+            "SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC",
+            [req.params.customerId]
+        );
+
+        for (const order of orders) {
+            order.items = await db.query("SELECT * FROM order_items WHERE order_id = ?", [order.id]);
+        }
+
+        res.json({ success: true, orders: orders });
+    } catch (err) {
+        res.json({ success: false, error: err.message });
+    }
+});
+
+// 获取订单详情
+app.get('/api/orders/:id', async (req, res) => {
+    try {
+        const order = await db.get(
+            "SELECT o.*, c.name as customer_name, c.phone as customer_phone, c.address as customer_address FROM orders o LEFT JOIN customers c ON o.customer_id = c.id WHERE o.id = ?",
+            [req.params.id]
+        );
+
+        if (order) {
+            order.items = await db.query("SELECT * FROM order_items WHERE order_id = ?", [order.id]);
+        }
+
+        res.json({ success: true, order: order });
+    } catch (err) {
+        res.json({ success: false, error: err.message });
     }
 });
 
